@@ -1,5 +1,4 @@
-const API_URL = 'https://jingpin-analysis.vercel.app/api/analyze';
-const DAILY_FREE = 3;
+const API_URL = 'https://comment-analyzer-one.vercel.app/api/analyze';
 const STORAGE_KEY_DATE = 'ct_plugin_date';
 const STORAGE_KEY_COUNT = 'ct_plugin_count';
 const STORAGE_KEY_ACTIVATED = 'ct_plugin_activated';
