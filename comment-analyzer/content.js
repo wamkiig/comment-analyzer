@@ -1,7 +1,8 @@
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'extractComments') {
-    const comments = extractComments();
-    sendResponse({ comments });
+    const result = extractComments();
+    console.log('Extracted comments:', result);
+    sendResponse({ comments: result });
   }
   return true;
 });
@@ -9,7 +10,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 function extractComments() {
   const url = location.href;
   let selectors = [];
-  
+
   if (url.includes('xiaohongshu.com')) {
     selectors = [
       '.comment-item .content',
@@ -39,13 +40,11 @@ function extractComments() {
     }
   }
 
-  // 降级：尝试获取评论容器内所有文本
+  // 降级方案
   if (allComments.length === 0) {
-    const commentContainer = document.querySelector('.comment-container, .comments, [class*="comment"]');
-    if (commentContainer) {
-      const lines = commentContainer.innerText.split('\n').filter(t => t.trim());
-      allComments = lines.slice(0, 50);
-    }
+    const bodyText = document.body.innerText;
+    const lines = bodyText.split('\n').filter(t => t.trim().length > 10);
+    allComments = lines.slice(0, 30);
   }
 
   return allComments.slice(0, 30).join('\n');

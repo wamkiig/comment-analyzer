@@ -1,5 +1,14 @@
 const API_URL = 'https://comment-analyzer-one.vercel.app/api/analyze';
+const DAILY_FREE = 3;
 const STORAGE_KEY_DATE = 'ct_plugin_date';
+const STORAGE_KEY_COUNT = 'ct_plugin_count';
+const STORAGE_KEY_ACTIVATED = 'ct_plugin_activated';
+
+// 有效激活码列表（你可以自己增删）
+const VALID_ACTIVATION_CODES = ['JP2024-FREE', 'PRO-UNLOCK'];
+
+// 你的收款码图片URL（替换成你的图床直链）
+const PAY_QR_URL = 'https://你的收款码图片链接.png';const STORAGE_KEY_DATE = 'ct_plugin_date';
 const STORAGE_KEY_COUNT = 'ct_plugin_count';
 const STORAGE_KEY_ACTIVATED = 'ct_plugin_activated';
 

@@ -4,7 +4,7 @@
   "version": "1.0",
   "description": "自动分析小红书/抖音评论区，获取选题策略",
   "permissions": ["activeTab", "storage"],
-  "host_permissions": ["https://你的域名.vercel.app/*"],
+  "host_permissions": ["https://comment-analyzer-one.vercel.app/*"],
   "action": {
     "default_popup": "popup.html",
     "default_title": "分析评论区"
@@ -18,10 +18,5 @@
       ],
       "js": ["content.js"]
     }
-  ],
-  "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
-  }
+  ]
 }
