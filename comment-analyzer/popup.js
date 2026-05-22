@@ -1,10 +1,10 @@
-const API_URL = 'https://comment-analyzer-one.vercel.app/api/analyze';
+const API_URL = 'https://api-backend-vggn.vercel.app/api/analyze';
 const DAILY_FREE = 3;
 const STORAGE_KEY_DATE = 'ct_plugin_date';
 const STORAGE_KEY_COUNT = 'ct_plugin_count';
 const STORAGE_KEY_ACTIVATED = 'ct_plugin_activated';
 const VALID_ACTIVATION_CODES = ['JP2024-FREE', 'PRO-UNLOCK'];
-const PAY_QR_URL = 'https://ibb.co/mCSscTrc.png'; // 替换成你的收款码直链
+const PAY_QR_URL = 'https://你的收款码图片链接.png'; // 替换成你的收款码直链
 
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {
@@ -120,6 +120,53 @@ function escapeHTML(str) {
   return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
 
+// 核心：通过 executeScript 直接提取页面评论
+async function extractCommentsFromPage() {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  // 注入函数：在页面上下文中执行
+  const result = await chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    func: () => {
+      const url = location.href;
+      let selectors = [];
+      if (url.includes('xiaohongshu.com')) {
+        selectors = [
+          '.comment-item .content',
+          '.comment-content .text',
+          '.note-comment .comment-text',
+          '[class*="comment"] [class*="text"]'
+        ];
+      } else if (url.includes('douyin.com')) {
+        selectors = [
+          '.comment-content .text',
+          '.comment-item .comment-text',
+          '[class*="Comment"] [class*="content"]'
+        ];
+      }
+      let allComments = [];
+      for (const selector of selectors) {
+        const elements = document.querySelectorAll(selector);
+        if (elements.length > 0) {
+          elements.forEach(el => {
+            const text = el.textContent.trim();
+            if (text && !allComments.includes(text)) {
+              allComments.push(text);
+            }
+          });
+          break;
+        }
+      }
+      if (allComments.length === 0) {
+        const bodyText = document.body.innerText;
+        const lines = bodyText.split('\n').filter(t => t.trim().length > 10);
+        allComments = lines.slice(0, 30);
+      }
+      return allComments.slice(0, 30).join('\n');
+    }
+  });
+  return result[0].result;
+}
+
 // 主分析流程
 document.getElementById('analyzeBtn').addEventListener('click', async () => {
   const btn = document.getElementById('analyzeBtn');
@@ -133,19 +180,18 @@ document.getElementById('analyzeBtn').addEventListener('click', async () => {
 
   btn.disabled = true;
   btn.textContent = '分析中...';
-  resultArea.innerHTML = '<div class="loading">正在抓取评论区...</div>';
+  resultArea.innerHTML = '<div class="loading">正在提取评论区...</div>';
 
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    const response = await chrome.tabs.sendMessage(tab.id, { action: 'extractComments' });
-    
-    if (!response || !response.comments) {
-      throw new Error('未找到评论区内容，请确保在小红书或抖音笔记页面。');
-    }
-
-    const comments = response.comments;
     const url = tab.url;
     const platform = url.includes('douyin.com') ? 'douyin' : 'xiaohongshu';
+
+    // 直接注入提取评论（不用 content.js 通信）
+    const comments = await extractCommentsFromPage();
+    if (!comments) {
+      throw new Error('未提取到评论区内容，请确保页面已加载评论区。');
+    }
 
     resultArea.innerHTML = '<div class="loading">正在分析评论...</div>';
 

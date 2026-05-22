@@ -3,20 +3,10 @@
   "name": "竞品评论分析",
   "version": "1.0",
   "description": "自动分析小红书/抖音评论区，获取选题策略",
-  "permissions": ["activeTab", "storage"],
+  "permissions": ["activeTab", "storage", "scripting"],
   "host_permissions": ["https://comment-analyzer-one.vercel.app/*"],
   "action": {
     "default_popup": "popup.html",
     "default_title": "分析评论区"
-  },
-  "content_scripts": [
-    {
-      "matches": [
-        "https://www.xiaohongshu.com/*",
-        "https://www.douyin.com/*",
-        "https://v.douyin.com/*"
-      ],
-      "js": ["content.js"]
-    }
-  ]
+  }
 }
