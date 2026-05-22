@@ -3,20 +3,8 @@ const DAILY_FREE = 3;
 const STORAGE_KEY_DATE = 'ct_plugin_date';
 const STORAGE_KEY_COUNT = 'ct_plugin_count';
 const STORAGE_KEY_ACTIVATED = 'ct_plugin_activated';
-
-// 有效激活码列表（你可以自己增删）
 const VALID_ACTIVATION_CODES = ['JP2024-FREE', 'PRO-UNLOCK'];
-
-// 你的收款码图片URL（替换成你的图床直链）
-const PAY_QR_URL = 'https://你的收款码图片链接.png';const STORAGE_KEY_DATE = 'ct_plugin_date';
-const STORAGE_KEY_COUNT = 'ct_plugin_count';
-const STORAGE_KEY_ACTIVATED = 'ct_plugin_activated';
-
-// 有效激活码列表（你可以自己增删）
-const VALID_ACTIVATION_CODES = ['UNLOCK-JP-2026', 'PAID-USER-001'];
-
-// 你的收款码图片URL（替换成你的图床直链）
-const PAY_QR_URL = 'https://ibb.co/zw6dp6b.png';
+const PAY_QR_URL = 'https://ibb.co/mCSscTrc.png'; // 替换成你的收款码直链
 
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {
@@ -70,7 +58,7 @@ function activate() {
     alert('激活码无效，请检查输入或联系作者购买。');
   }
 }
-window.activate = activate; // 暴露给HTML onclick
+window.activate = activate;
 
 // 显示付费界面
 function showPayWall() {
@@ -79,8 +67,8 @@ function showPayWall() {
     <div class="card pay-card">
       <h3>今日免费次数已用完</h3>
       <p style="color:var(--text-secondary);">
-        由于API调用成本较高，免费额度仅供试用。<br>
-        你可以选择付费解锁无限使用，支持月费9.9元或永久29.9元。
+        API调用成本较高，免费额度仅供试用。<br>
+        你可以付费解锁无限使用，支持月费9.9元或永久29.9元。
       </p>
       <div>
         <img src="${PAY_QR_URL}" alt="收款码">
